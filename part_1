@@ -1,0 +1,124 @@
+// Перечисление действий с автомобилем
+enum Action {
+    case startEngine
+    case stopEngine
+    case openWindows
+    case closeWindows
+    case loadCargo(volume: Double)
+    case unloadCargo(volume: Double)
+}
+
+// Структура для легкового автомобиля
+struct Car: Hashable {
+    var brand: String
+    var year: Int
+    var trunkVolume: Double
+    var isEngineRunning: Bool
+    var areWindowsOpen: Bool
+    var filledTrunkVolume: Double
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(brand)
+        hasher.combine(year)
+    }
+
+    static func == (lhs: Car, rhs: Car) -> Bool {
+        return lhs.brand == rhs.brand && lhs.year == rhs.year
+    }
+
+    mutating func perform(action: Action) {
+        switch action {
+        case .startEngine:
+            isEngineRunning = true
+        case .stopEngine:
+            isEngineRunning = false
+        case .openWindows:
+            areWindowsOpen = true
+        case .closeWindows:
+            areWindowsOpen = false
+        case .loadCargo(let volume):
+            if filledTrunkVolume + volume <= trunkVolume {
+                filledTrunkVolume += volume
+            } else {
+                print("Невозможно загрузить груз. Превышен объем багажника.")
+            }
+        case .unloadCargo(let volume):
+            if filledTrunkVolume - volume >= 0 {
+                filledTrunkVolume -= volume
+            } else {
+                print("Невозможно выгрузить груз. Багажник пуст.")
+            }
+        }
+    }
+}
+
+// Структура для грузовика
+struct Truck: Hashable {
+    var brand: String
+    var year: Int
+    var cargoVolume: Double
+    var isEngineRunning: Bool
+    var areWindowsOpen: Bool
+    var filledCargoVolume: Double
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(brand)
+        hasher.combine(year)
+    }
+
+    static func == (lhs: Truck, rhs: Truck) -> Bool {
+        return lhs.brand == rhs.brand && lhs.year == rhs.year
+    }
+
+    mutating func perform(action: Action) {
+        switch action {
+        case .startEngine:
+            isEngineRunning = true
+        case .stopEngine:
+            isEngineRunning = false
+        case .openWindows:
+            areWindowsOpen = true
+        case .closeWindows:
+            areWindowsOpen = false
+        case .loadCargo(let volume):
+            if filledCargoVolume + volume <= cargoVolume {
+                filledCargoVolume += volume
+            } else {
+                print("Невозможно загрузить груз. Превышен объем кузова.")
+            }
+        case .unloadCargo(let volume):
+            if filledCargoVolume - volume >= 0 {
+                filledCargoVolume -= volume
+            } else {
+                print("Невозможно выгрузить груз. Кузов пуст.")
+            }
+        }
+    }
+}
+
+// Создание экземпляров структур и применение различных действий
+var car = Car(brand: "Toyota", year: 2020, trunkVolume: 500, isEngineRunning: false, areWindowsOpen: false, filledTrunkVolume: 0)
+var truck = Truck(brand: "Volvo", year: 2018, cargoVolume: 2000, isEngineRunning: false, areWindowsOpen: false, filledCargoVolume: 0)
+
+car.perform(action: .startEngine)
+car.perform(action: .openWindows)
+car.perform(action: .loadCargo(volume: 300))
+
+truck.perform(action: .startEngine)
+truck.perform(action: .loadCargo(volume: 1500))
+
+// Создание словаря с экземплярами структур
+var carDict: [Car: String] = [car: "car"]
+var truckDict: [Truck: String] = [truck: "truck"]
+
+print(carDict)
+print(truckDict)
+
+// Добавим ещё элемент в словарь
+let newCar = Car(brand: "BMW", year: 2022, trunkVolume: 600, isEngineRunning: false, areWindowsOpen: true, filledTrunkVolume: 200)
+
+// Добавляем новый элемент в словарь carDict
+carDict[newCar] = "newCar"
+
+// Выводим обновленный словарь carDict
+print(carDict)
