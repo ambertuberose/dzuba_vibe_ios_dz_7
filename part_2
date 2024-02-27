@@ -1,0 +1,20 @@
+class SomeClass {
+  var value: Int = 0 // Переменная, которая будет захвачена замыканием
+
+  // lazy свойство closure, которое представляет замыкание
+  // Замыкание захватывает переменную value
+  lazy var closure: () -> Void = { [weak self] in
+      // В замыкании используем [weak self], чтобы избежать цикла ссылок
+      guard let self = self else { return } // Проверка, что self не nil
+      print("Value is \(self.value)") // Вывод значения переменной value
+  }
+
+  init(value: Int) {
+      self.value = value // Инициализация переменной value
+  }
+}
+
+// Создание экземпляра класса SomeClass с начальным значением переменной value равным 5
+var instance: SomeClass? = SomeClass(value: 5)
+instance?.closure() // Вызов замыкания, должен вывести "Value is 5"
+instance = nil // Уничтожение ссылки на экземпляр класса SomeClass
